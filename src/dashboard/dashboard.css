@@ -1,0 +1,35 @@
+.dashboard-container{
+    height: 100vh;
+}
+.select-container{
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin: 2rem;
+}
+.select-heading{
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+.select-form{
+    width: 200px;
+}
+.show-results{
+    margin: 2rem;
+}
+.items-container{
+    margin: 1rem 2rem;
+}
+.item-card{
+    border: 1px solid lightgrey;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+.subtext{
+    display: flex;
+    justify-content: space-between;
+}
+.date{
+    color: green;
+}

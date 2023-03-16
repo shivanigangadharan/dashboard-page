@@ -11,6 +11,7 @@ import axios from 'axios';
 import Skeleton from '@mui/material/Skeleton';
 import MoodIcon from '@mui/icons-material/Mood';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 
 export default function Dashboard() {
     const [feed, setFeed] = useState('');
@@ -43,10 +44,13 @@ export default function Dashboard() {
                         );
                         let neg = response.data.negative_sentiment_percentage;
                         let pos = response.data.positive_sentiment_percentage;
-                        if (neg > pos) {
-                            emotion = "Happy"
+                        if (neg === pos) {
+                            emotion = "neutral"
+                        }
+                        else if (neg > pos) {
+                            emotion = "sad"
                         } else {
-                            emotion = "Sad"
+                            emotion = "happy"
                         }
                         currObject = { ...currObject, emotion: emotion }
                         result.push(currObject)
@@ -123,7 +127,10 @@ export default function Dashboard() {
                                     <span> {item?.text} </span>
                                     <Box className="subtext">
                                         <div className='date'> {item?.date} </div>
-                                        <div> {item?.emotion === "Happy" ? <MoodIcon sx={{ color: "green" }} /> : <MoodBadIcon sx={{ color: "crimson" }} />} </div>
+                                        <div> {item?.emotion === "neutral" ? <SentimentNeutralIcon sx={{ color: "#f2b50c" }} />
+                                            : (item?.emotion === "happy" ? <MoodIcon sx={{ color: "green" }} />
+                                                : <MoodBadIcon sx={{ color: "crimson" }} />)}
+                                        </div>
                                     </Box>
                                     <Box sx={{ display: "flex" }}>
                                         Named entities: {item?.entities?.map((e) => {

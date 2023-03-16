@@ -139,8 +139,13 @@ export default function Dashboard() {
                                         </div>
                                     </Box>
                                     <Box sx={{ display: "flex" }}>
-                                        Named entities: {item?.entities && item?.entities?.map((e) => {
-                                            return <Box> {e} {i < item.length - 1 ? ", " : ""} </Box>
+                                        <b> Named entities:</b> {item?.entities && item?.entities?.map((e, index) => {
+                                            return <Box>
+                                                {
+                                                    item.entities.length === 0 ? "-" : ""
+                                                }
+                                                &nbsp;{e}{index < items.length - 1 ? "," : ""}
+                                            </Box>
                                         })}
                                     </Box>
                                 </Box>

@@ -16,10 +16,12 @@ import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 export default function Dashboard() {
     const [feed, setFeed] = useState('');
     const [items, setItems] = useState([]);
+    const [entities, setEntities] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const GetEntities = async (result) => {
         let final = [];
+
         await Promise.allSettled(result.map(async (item) => {
             const emoRes = await axios.post(
                 'https://api.text-miner.com/ner',
@@ -30,15 +32,13 @@ export default function Dashboard() {
                     }
                 }
             )
-            console.log(emoRes.data)
+            setEntities((prev) => { return [...prev, emoRes.data] })
             final.push({ ...item, entities: emoRes.data })
         })
         )
-        console.log("setting: ", final)
-        setItems(final)
+        // setItems(final)
         setLoading(false)
     }
-
     const GetNewsReports = async (provider) => {
         setLoading(true)
         try {
@@ -51,7 +51,8 @@ export default function Dashboard() {
                         let emotion = "";
                         let currObject = {
                             text: itemArray[0],
-                            date: itemArray[1]
+                            date: itemArray[1],
+                            id: i
                         }
                         const response = await axios.post(
                             'https://api.text-miner.com/sentiment',
@@ -74,7 +75,6 @@ export default function Dashboard() {
                             emotion = "happy"
                         }
                         currObject = { ...currObject, emotion: emotion }
-                        console.log("co: ", currObject)
                         result.push(currObject)
                     }
                 })
@@ -91,6 +91,7 @@ export default function Dashboard() {
 
 
     const handleChange = (event) => {
+        setEntities([])
         setFeed(event.target.value);
         const provider = event.target.value;
         GetNewsReports(provider);
@@ -139,12 +140,12 @@ export default function Dashboard() {
                                         </div>
                                     </Box>
                                     <Box sx={{ display: "flex" }}>
-                                        <b> Named entities:</b> {item?.entities && item?.entities?.map((e, index) => {
+                                        <b> Named entities:</b>
+
+                                        {entities[i]?.map((e, index) => {
                                             return <Box>
-                                                {
-                                                    item.entities.length === 0 ? "-" : ""
-                                                }
-                                                &nbsp;{e}{index < items.length - 1 ? "," : ""}
+                                                &nbsp;{e}
+                                                {index < items.length - 1 ? "," : ""}
                                             </Box>
                                         })}
                                     </Box>

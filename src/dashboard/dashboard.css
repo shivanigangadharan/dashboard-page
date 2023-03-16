@@ -18,6 +18,16 @@
 .show-results{
     margin: 2rem;
 }
+.empty-box{
+    border: 2px dashed lightgray;
+    padding: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
+    font-size: 1.5rem;
+    margin: 2rem;
+}
 .items-container{
     margin: 1rem 2rem;
 }
@@ -32,4 +42,10 @@
 }
 .date{
     color: green;
+}
+.skeletons-container{
+    padding: 2rem;
+}
+.skeleton{
+    width: 100%;
 }

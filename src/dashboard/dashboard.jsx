@@ -18,6 +18,27 @@ export default function Dashboard() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const GetEntities = async (result) => {
+        let final = [];
+        await Promise.allSettled(result.map(async (item) => {
+            const emoRes = await axios.post(
+                'https://api.text-miner.com/ner',
+                `message=${item.text}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }
+            )
+            console.log(emoRes.data)
+            final.push({ ...item, entities: emoRes.data })
+        })
+        )
+        console.log("setting: ", final)
+        setItems(final)
+        setLoading(false)
+    }
+
     const GetNewsReports = async (provider) => {
         setLoading(true)
         try {
@@ -30,8 +51,7 @@ export default function Dashboard() {
                         let emotion = "";
                         let currObject = {
                             text: itemArray[0],
-                            date: itemArray[1],
-                            emo: []
+                            date: itemArray[1]
                         }
                         const response = await axios.post(
                             'https://api.text-miner.com/sentiment',
@@ -42,6 +62,7 @@ export default function Dashboard() {
                                 }
                             }
                         );
+
                         let neg = response.data.negative_sentiment_percentage;
                         let pos = response.data.positive_sentiment_percentage;
                         if (neg === pos) {
@@ -53,31 +74,16 @@ export default function Dashboard() {
                             emotion = "happy"
                         }
                         currObject = { ...currObject, emotion: emotion }
+                        console.log("co: ", currObject)
                         result.push(currObject)
                     }
                 })
             )
             setItems(result)
             setLoading(false)
-            // let emoResult = [];
-            // await Promise.allSettled(
-            //     items.map(async (item) => {
-            //         let currObject;
-            //         const emoRes = await axios.post(
-            //             'https://api.text-miner.com/ner',
-            //             `message=${item.text}`,
-            //             {
-            //                 headers: {
-            //                     'Content-Type': 'application/x-www-form-urlencoded'
-            //                 }
-            //             }
-            //         )
-            //         console.log(emoRes.data)
-            //         currObject = { ...item, entities: emoRes.data }
-            //         emoResult.push(currObject)
-            //     })
-            // )
-            // setItems(emoResult)
+
+            GetEntities(result)
+
         } catch (error) {
             console.error(error)
         }
@@ -115,8 +121,8 @@ export default function Dashboard() {
                 !loading && items.length === 0 ?
                     <Box className="empty-box">{'Choose a feed provider to view sentimental analysis of news articles.'} </Box> :
                     (loading ?
-                        [1, 2, 3].map((e) => {
-                            return <Box className="skeletons-container">
+                        [1, 2, 3].map((e, i) => {
+                            return <Box key={i} className="skeletons-container">
                                 <Skeleton className='skeleton' animation="wave" variant="rectangular" height={100} />
                             </Box>
                         })
@@ -133,8 +139,8 @@ export default function Dashboard() {
                                         </div>
                                     </Box>
                                     <Box sx={{ display: "flex" }}>
-                                        Named entities: {item?.entities?.map((e) => {
-                                            return <Box> {e} </Box>
+                                        Named entities: {item?.entities && item?.entities?.map((e) => {
+                                            return <Box> {e} {i < item.length - 1 ? ", " : ""} </Box>
                                         })}
                                     </Box>
                                 </Box>

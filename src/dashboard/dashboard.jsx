@@ -46,43 +46,42 @@ export default function Dashboard() {
             let result = [];
             await Promise.allSettled(
                 JSON.parse(res.data).map(async (item, i) => {
-                    if (i < 5) {
-                        const itemArray = item.split("\t");
-                        let emotion = "";
-                        let currObject = {
-                            text: itemArray[0],
-                            date: itemArray[1],
-                            id: i
-                        }
-                        const response = await axios.post(
-                            'https://api.text-miner.com/sentiment',
-                            `message=${currObject.text}`,
-                            {
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded'
-                                }
-                            }
-                        );
-
-                        let neg = response.data.negative_sentiment_percentage;
-                        let pos = response.data.positive_sentiment_percentage;
-                        if (neg === pos) {
-                            emotion = "neutral"
-                        }
-                        else if (neg > pos) {
-                            emotion = "sad"
-                        } else {
-                            emotion = "happy"
-                        }
-                        currObject = { ...currObject, emotion: emotion }
-                        result.push(currObject)
+                    const itemArray = item.split("\t");
+                    let emotion = "";
+                    let currObject = {
+                        text: itemArray[0],
+                        date: itemArray[1],
+                        id: i
                     }
-                })
+                    const response = await axios.post(
+                        'https://api.text-miner.com/sentiment',
+                        `message=${currObject.text}`,
+                        {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        }
+                    );
+
+                    let neg = response.data.negative_sentiment_percentage;
+                    let pos = response.data.positive_sentiment_percentage;
+                    if (neg === pos) {
+                        emotion = "neutral"
+                    }
+                    else if (neg > pos) {
+                        emotion = "sad"
+                    } else {
+                        emotion = "happy"
+                    }
+                    currObject = { ...currObject, emotion: emotion }
+                    result.push(currObject)
+                }
+                )
             )
             setItems(result)
             setLoading(false)
 
-            GetEntities(result)
+            // GetEntities(result)
 
         } catch (error) {
             console.error(error)
@@ -114,7 +113,7 @@ export default function Dashboard() {
                     >
                         <MenuItem value="cnbc">CNBC</MenuItem>
                         <MenuItem value="wsj">WSJ</MenuItem>
-                        <MenuItem value="yahoo">Yahoo</MenuItem>
+                        {/* <MenuItem value="yahoo">Yahoo</MenuItem> */}
                     </Select>
                 </FormControl>
             </Box>
@@ -139,8 +138,8 @@ export default function Dashboard() {
                                                 : <MoodBadIcon sx={{ color: "crimson" }} />)}
                                         </div>
                                     </Box>
-                                    <Box sx={{ display: "flex" }}>
-                                        <b> Named entities:</b>
+                                    {/* <Box sx={{ display: "flex" }}>
+                                        <b> Talks about:</b>
 
                                         {entities[i]?.map((e, index) => {
                                             return <Box>
@@ -148,7 +147,7 @@ export default function Dashboard() {
                                                 {index < items.length - 1 ? "," : ""}
                                             </Box>
                                         })}
-                                    </Box>
+                                    </Box> */}
                                 </Box>
                             })}
                         </Box>

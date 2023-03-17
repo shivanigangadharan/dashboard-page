@@ -12,6 +12,7 @@ import Skeleton from '@mui/material/Skeleton';
 import MoodIcon from '@mui/icons-material/Mood';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+import ProgressBar from '../components/progressBar.js/progressBar';
 
 export default function Dashboard() {
     const [feed, setFeed] = useState('');
@@ -47,7 +48,6 @@ export default function Dashboard() {
             await Promise.allSettled(
                 JSON.parse(res.data).map(async (item, i) => {
                     const itemArray = item.split("\t");
-                    let emotion = "";
                     let currObject = {
                         text: itemArray[0],
                         date: itemArray[1],
@@ -62,18 +62,8 @@ export default function Dashboard() {
                             }
                         }
                     );
-
-                    let neg = response.data.negative_sentiment_percentage;
                     let pos = response.data.positive_sentiment_percentage;
-                    if (neg === pos) {
-                        emotion = "neutral"
-                    }
-                    else if (neg > pos) {
-                        emotion = "sad"
-                    } else {
-                        emotion = "happy"
-                    }
-                    currObject = { ...currObject, emotion: emotion }
+                    currObject = { ...currObject, pos: pos }
                     result.push(currObject)
                 }
                 )
@@ -99,7 +89,6 @@ export default function Dashboard() {
     return (
         <div className='dashboard-container'>
             <Navbar />
-
             <Box className="select-container">
                 <span className='select-heading'> Pick Feed Provider: </span>
                 <FormControl size='small' className='select-form'>
@@ -108,7 +97,7 @@ export default function Dashboard() {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={feed}
-                        label="Age"
+                        label="Select News Source"
                         onChange={handleChange}
                     >
                         <MenuItem value="cnbc">CNBC</MenuItem>
@@ -118,7 +107,7 @@ export default function Dashboard() {
                 </FormControl>
             </Box>
             {
-                !loading && items.length === 0 ?
+                !loading && items?.length === 0 ?
                     <Box className="empty-box">{'Choose a feed provider to view sentimental analysis of news articles.'} </Box> :
                     (loading ?
                         [1, 2, 3].map((e, i) => {
@@ -133,10 +122,15 @@ export default function Dashboard() {
                                     <span> {item?.text} </span>
                                     <Box className="subtext">
                                         <div className='date'> {item?.date} </div>
-                                        <div> {item?.emotion === "neutral" ? <SentimentNeutralIcon sx={{ color: "#f2b50c" }} />
-                                            : (item?.emotion === "happy" ? <MoodIcon sx={{ color: "green" }} />
-                                                : <MoodBadIcon sx={{ color: "crimson" }} />)}
-                                        </div>
+                                        {/* <div> {item?.emotion === "neutral" ? <SentimentNeutralIcon sx={{ color: "#f2b50c" }} />
+                                            : (item?.emotion === "happy" ? 
+                                                : )}
+                                        </div> */}
+                                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                                            <MoodBadIcon sx={{ color: item?.pos == 100 ? "lightgrey" : "crimson" }} />
+                                            <ProgressBar pos={parseInt(item?.pos)} />
+                                            <MoodIcon sx={{ color: item?.pos == 0 ? "lightgrey" : "green" }} />
+                                        </Box>
                                     </Box>
                                     {/* <Box sx={{ display: "flex" }}>
                                         <b> Talks about:</b>

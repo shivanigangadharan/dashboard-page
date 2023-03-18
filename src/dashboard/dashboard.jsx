@@ -63,7 +63,8 @@ export default function Dashboard() {
                         }
                     );
                     let pos = response.data.positive_sentiment_percentage;
-                    currObject = { ...currObject, pos: pos }
+                    let neg = response.data.negative_sentiment_percentage;
+                    currObject = { ...currObject, pos: pos, neg: neg }
                     result.push(currObject)
                 }
                 )
@@ -127,8 +128,8 @@ export default function Dashboard() {
                                                 : )}
                                         </div> */}
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                                            <MoodBadIcon sx={{ color: item?.pos == 100 ? "lightgrey" : "crimson" }} />
-                                            <ProgressBar pos={parseInt(item?.pos)} />
+                                            <MoodBadIcon sx={{ color: item?.neg == 0 ? "lightgrey" : "crimson" }} />
+                                            <ProgressBar pos={parseInt(item?.pos)} neg={parseInt(item?.neg)} />
                                             <MoodIcon sx={{ color: item?.pos == 0 ? "lightgrey" : "green" }} />
                                         </Box>
                                     </Box>

@@ -2,10 +2,9 @@ import { Box } from "@mui/material"
 
 
 
-export default function ProgressBar({ pos }) {
+export default function ProgressBar({ pos, neg }) {
 
-    const neg = 100 - pos;
-    const color = pos === 100 ? "#02a80d" : (neg === 100 ? "#f71919" : "")
+    const color = pos === 100 ? "#02a80d" : (neg === 100 ? "#f71919" : ((pos === 0 && neg === 0) ? "lightgrey" : ""))
 
     const parent = {
         display: "flex",
@@ -37,9 +36,10 @@ export default function ProgressBar({ pos }) {
     return (
         <div>
             {
-                (pos === 100 || pos === 0) ?
+                (pos === 0 || pos === 100 || neg === 0 || neg === 100) ?
                     <Box style={parent}>
-                        <Box style={fullBar}></Box></Box> :
+                        <Box style={fullBar}> </Box>
+                    </Box> :
                     <Box style={parent}>
                         <Box style={negStyle}></Box>
                         <Box style={posStyle}></Box>

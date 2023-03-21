@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Footer from '../components/footer/footer';
 import Navbar from '../components/navbar/navbar';
 import InputLabel from '@mui/material/InputLabel';
@@ -11,14 +11,24 @@ import axios from 'axios';
 import Skeleton from '@mui/material/Skeleton';
 import MoodIcon from '@mui/icons-material/Mood';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
-import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import ProgressBar from '../components/progressBar.js/progressBar';
 
 export default function Dashboard() {
-    const [feed, setFeed] = useState('');
+    const [feed, setFeed] = useState(null);
     const [items, setItems] = useState([]);
     const [entities, setEntities] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const intervalID = setInterval(() => {
+            if (feed !== null) {
+                GetNewsReports(feed)
+                // console.log("get")
+            }
+        }, 180000)
+        return () => clearInterval(intervalID)
+    }, [feed])
 
     const GetEntities = async (result) => {
         let final = [];
@@ -90,22 +100,32 @@ export default function Dashboard() {
     return (
         <div className='dashboard-container'>
             <Navbar />
-            <Box className="select-container">
-                <span className='select-heading'> Pick Feed Provider: </span>
-                <FormControl size='small' className='select-form'>
-                    <InputLabel id="demo-simple-select-label">Select News Source</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={feed}
-                        label="Select News Source"
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="cnbc">CNBC</MenuItem>
-                        <MenuItem value="wsj">WSJ</MenuItem>
-                        {/* <MenuItem value="yahoo">Yahoo</MenuItem> */}
-                    </Select>
-                </FormControl>
+            <Box className="select-legend-wrapper" >
+                <Box className="select-container">
+                    <span className='select-heading'> Pick Feed Provider: </span>
+                    <FormControl size='small' className='select-form'>
+                        <InputLabel id="demo-simple-select-label">Select News Source</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={feed}
+                            label="Select News Source"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="cnbc">CNBC</MenuItem>
+                            <MenuItem value="wsj">WSJ</MenuItem>
+                            <MenuItem value="polygon">Polygon</MenuItem>
+                            {/* <MenuItem value="yahoo">Yahoo</MenuItem> */}
+                        </Select>
+                    </FormControl>
+                    <RefreshIcon onClick={() => { if (feed !== null) GetNewsReports(feed) }} sx={{ color: "dodgerblue" }} />
+                </Box>
+
+                <Box className="legend-container">
+                    <Box className="legend"> <ProgressBar pos={100} neg={0} /> - Positive outlook</Box>
+                    <Box className="legend"> <ProgressBar pos={0} neg={100} /> - Negative outlook</Box>
+                    <Box className="legend"> <ProgressBar pos={0} neg={0} /> - Neutral outlook</Box>
+                </Box>
             </Box>
             {
                 !loading && items?.length === 0 ?

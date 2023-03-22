@@ -32,7 +32,7 @@
 }
 
 .select-heading {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 300;
 }
 
@@ -80,4 +80,18 @@
 
 .skeleton {
     width: 100%;
+}
+@media screen and (max-width: 800px) {
+    .select-legend-wrapper{
+        flex-direction: column;
+    }
+    .legend-container{
+        width: 90%;
+        margin-top: 1rem;
+    }
+    .subtext{
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
 }

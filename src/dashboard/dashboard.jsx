@@ -60,8 +60,7 @@ export default function Dashboard() {
                     const itemArray = item.split("\t");
                     let currObject = {
                         text: itemArray[0],
-                        date: itemArray[1],
-                        id: i
+                        date: itemArray[1]
                     }
                     const response = await axios.post(
                         'https://api.text-miner.com/sentiment',

@@ -1,7 +1,5 @@
 import { Box } from "@mui/material"
 
-
-
 export default function ProgressBar({ pos, neg }) {
 
     const color = pos === 100 ? "#02a80d" : (neg === 100 ? "#f71919" : ((pos === 0 && neg === 0) ? "lightgrey" : ""))

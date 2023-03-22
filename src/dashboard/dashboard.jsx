@@ -21,15 +21,17 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const intervalID = setInterval(() => {
-            if (feed !== null) {
-                GetNewsReports(feed)
-                // console.log("get")
-            }
-        }, 180000)
+        const intervalID = setInterval(
+            //function to refresh feed every 3 minutes
+            () => {
+                if (feed !== null) {
+                    GetNewsReports(feed)
+                }
+            }, 180000)
         return () => clearInterval(intervalID)
     }, [feed])
 
+    //function to set named entities
     const GetEntities = async (result) => {
         let final = [];
 
@@ -50,6 +52,8 @@ export default function Dashboard() {
         // setItems(final)
         setLoading(false)
     }
+
+    //function to get news text, and sentiment score for each news
     const GetNewsReports = async (provider) => {
         setLoading(true)
         try {
@@ -88,7 +92,7 @@ export default function Dashboard() {
         }
     }
 
-
+    //function called whenever news provider is changed
     const handleChange = (event) => {
         setEntities([])
         setFeed(event.target.value);
@@ -142,16 +146,15 @@ export default function Dashboard() {
                                     <span> {item?.text} </span>
                                     <Box className="subtext">
                                         <div className='date'> {item?.date} </div>
-                                        {/* <div> {item?.emotion === "neutral" ? <SentimentNeutralIcon sx={{ color: "#f2b50c" }} />
-                                            : (item?.emotion === "happy" ? 
-                                                : )}
-                                        </div> */}
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
                                             <MoodBadIcon sx={{ color: item?.neg == 0 ? "lightgrey" : "crimson" }} />
                                             <ProgressBar pos={parseInt(item?.pos)} neg={parseInt(item?.neg)} />
                                             <MoodIcon sx={{ color: item?.pos == 0 ? "lightgrey" : "green" }} />
                                         </Box>
                                     </Box>
+
+                                    {/* Uncomment to display named entities below: */}
+
                                     {/* <Box sx={{ display: "flex" }}>
                                         <b> Talks about:</b>
 
@@ -162,6 +165,7 @@ export default function Dashboard() {
                                             </Box>
                                         })}
                                     </Box> */}
+
                                 </Box>
                             })}
                         </Box>
